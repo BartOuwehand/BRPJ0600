@@ -22,7 +22,7 @@ def find_stars(xobj_list, yobj_list, xlist, ylist, f):
     distance_matrix = np.sqrt((xmatrix-xobj_list)**2 + (ymatrix-yobj_list)**2)
     
     indices = np.argmin(distance_matrix, axis=0)
-    
+    """
     # Make plot to check data
     plt.figure(figsize=(16,16))
     plt.scatter(xlist,ylist,c='b',)
@@ -31,10 +31,12 @@ def find_stars(xobj_list, yobj_list, xlist, ylist, f):
     	plt.plot([xobj_list[i],xlist[indices[i]]],[yobj_list[i],ylist[indices[i]]], linestyle='dashed',c='r')
     plt.title(f)
     plt.show()
-    
+    """
     return indices, np.diag(distance_matrix[indices])
     #the diagonal gives the distance from each selected object to the closest object
 
+# Make one file with the image_name, epoch, filter and airmass
+meta_data = [] #where each row is the meta-data from one file
 
 #selects all names in ../data/
 for filename in Path('..//data/').rglob('*e91.fits.fz'):
@@ -48,7 +50,8 @@ for filename in Path('..//data/').rglob('*e91.fits.fz'):
 	epoch = imh['MJD-OBS']
 	obs_filter = imh['FILTER']
 	airmass = imh['AIRMASS']
-	pix_asec = imh['PIXSCALE'] # Nominal pixel scale on sky [arcsec/pixel]
+	obj = filename.replace('../data/','')
+	meta_data.append([obj, epoch, obs_filter,airmass])
 	
 	# Transform the world coordinates for the selected stars into pixel coordinates
 	w = wcs.WCS(hdu1['SCI'].header)
@@ -59,19 +62,16 @@ for filename in Path('..//data/').rglob('*e91.fits.fz'):
 	print (d)
 	
 	# Use the indices to get the flux & fluxerr for all selected stars
-	flux_stars = np.zeros(nr_stars)
-	fluxerr_stars = np.zeros(nr_stars)
-	for i in range(nr_stars):
-		if d[i] < 25: #if the distance is more than 25 pixels (~9.7"), it's too far away so it will write out NaN
-			flux_stars[i] = phot['flux'][stars_arg[i]]
-			fluxerr_stars[i] = phot['fluxerr'][stars_arg[i]]
-		else:
-			flux_stars[i] = np.NaN
-			fluxerr_stars[i] = np.NaN
+	flux_stars = phot['flux'][stars_arg]
+	fluxerr_stars = phot['fluxerr'][stars_arg]
+	#if the distance is more than 25 pixels (~9.7"), it's too far away so it will write out NaN
+	select_mask = d > 25
+	flux_stars[d] = np.NaN
+	fluxerr_stars[d] = np.NaN
 	
 	
 	# Make a new file path to write to
-	newfilename = filename.replace('data','datared').replace('.fits.fz', '.txt')
+	newfilename = 
 	
 	#VERY cheap fix for "ValueError: Inconsistent data column lengths: {1, 44}", must be a better way
 	# maybe use 2 different files, maybe
@@ -92,6 +92,10 @@ for filename in Path('..//data/').rglob('*e91.fits.fz'):
 				names=['IMAGE','EPOCH','FILTER','AIRMASS','FLUX','FLUXERR'])
 	ascii.write(filecontent, newfilename, overwrite=True)
 
-
+# Write out the meta_data elements to a file
+filecontent = Table([meta_data[0,:],meta_data[1,:],meta_data[2,:],meta_data[3,:]], \
+				names=['IMAGE','EPOCH','FILTER','AIRMASS'])
+filepath = "..//datared/J0600_meta-data.txt"
+ascii.write(filecontent, filepath, overwrite=True)
 
 

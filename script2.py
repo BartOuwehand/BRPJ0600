@@ -23,7 +23,7 @@ def find_stars(xobj_list, yobj_list, xlist, ylist, f):
     distance_matrix = np.sqrt((xmatrix-xobj_list)**2 + (ymatrix-yobj_list)**2)
     
     indices = np.argmin(distance_matrix, axis=0)
-    
+    """
     # Make plot to check data
     plt.figure(figsize=(16,16))
     plt.scatter(xlist,ylist,c='b',s=4)
@@ -33,7 +33,7 @@ def find_stars(xobj_list, yobj_list, xlist, ylist, f):
     	plt.plot([xobj_list[i],xlist[indices[i]]],[yobj_list[i],ylist[indices[i]]], linestyle='dashed',c='r',linewidth=1)
     plt.title(f)
     plt.show()
-    
+    """
     return indices, np.diag(distance_matrix[indices])
     #the diagonal gives the distance from each selected object to the closest object
 

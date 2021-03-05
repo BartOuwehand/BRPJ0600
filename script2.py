@@ -11,7 +11,7 @@ from math import trunc
 standards = ascii.read("standards.txt", guess=False)
 coord_world = np.array([standards['RA'],standards['Dec']]).transpose()
 nr_stars = len(coord_world[:,0])
-print('Number of stars = {}'.format(nr_stars))
+#print('Number of stars = {}'.format(nr_stars))
 
 
 def find_stars(xobj_list, yobj_list, xlist, ylist, f):
@@ -43,7 +43,7 @@ t_image, t_newimg, t_epoch, t_filter, t_airmass = [], [], [], [], []
 #selects all names in ../data/
 for filename in Path('..//data/').rglob('*e91.fits.fz'):
 	filename = str(filename)
-	print (filename)
+#	print (filename)
 	# Open the file & extract certain data
 	hdu1 = fits.open(filename)
 	imh = hdu1['SCI'].header
@@ -74,11 +74,6 @@ for filename in Path('..//data/').rglob('*e91.fits.fz'):
 	select_mask = d > 25
 	flux_stars[select_mask] = np.NaN
 	fluxerr_stars[select_mask] = np.NaN
-	
-	if np.sum(select_mask) > .25*nr_stars:
-		print ("Bad data?" + filename)
-	
-	
 
 	# Write data to Table and then to file
 	filecontent = Table([range(1,nr_stars+1),flux_stars, fluxerr_stars], \

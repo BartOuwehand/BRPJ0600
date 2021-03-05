@@ -40,7 +40,7 @@ dis = distance(target_crd[0], target_crd[1], phot['x'], phot['y'])
 dis_asec = dis * pix_asec # convert distances in pixels to distances in arcseconds
 
 # Select stars upto certain radial distance from J0600
-radial_dis = 200 #arcsec
+radial_dis = 400 #arcsec
 mask = dis_asec < radial_dis
 print ("Nr of stars slected:",np.sum(mask))
 

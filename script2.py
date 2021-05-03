@@ -70,8 +70,8 @@ for filename in Path('..//data/').rglob('*e91.fits.fz'):
 	# Use the indices to get the flux & fluxerr for all selected stars
 	flux_stars = phot['flux'][stars_arg]
 	fluxerr_stars = phot['fluxerr'][stars_arg]
-	#if the distance is more than 25 pixels (~9.7"), it's too far away so it will write out NaN
-	select_mask = d > 25
+	#if the distance is more than 5", it's too far away so it will write out NaN
+    select_mask = d > 5/imh['PIXSCALE'] #convert arcsec to pixels
 	flux_stars[select_mask] = np.NaN
 	fluxerr_stars[select_mask] = np.NaN
 

@@ -41,7 +41,7 @@ def find_stars(xobj_list, yobj_list, xlist, ylist, f):
 t_image, t_newimg, t_epoch, t_filter, t_airmass = [], [], [], [], []
 
 #selects all names in ../data/
-for filename in Path('..//data/').rglob('*e91.fits.fz'):
+for filename in Path('../data/').rglob('*e91.fits.fz'):
 	filename = str(filename)
 #	print (filename)
 	# Open the file & extract certain data
@@ -62,7 +62,7 @@ for filename in Path('..//data/').rglob('*e91.fits.fz'):
 	coord = w.wcs_world2pix(coord_world,0)
 	
 	# Make a new file path to write to with name= str( [EPOCH to 5 decimals (~1s)]_[FILTER])
-	newfilename = '../datared/'+str(round(trunc(epoch*1e5)*1e-5,6)) + '_' + obs_filter + '.txt'
+	newfilename = 'datared/'+str(round(trunc(epoch*1e5)*1e-5,6)) + '_' + obs_filter + '.txt'
 	t_newimg.append(newfilename)
 	# Use the find_stars function to get the closest-star-indices for the selected stars
 	stars_arg, d = find_stars(coord[:,0],coord[:,1], phot['x'], phot['y'], newfilename)
@@ -83,7 +83,7 @@ for filename in Path('..//data/').rglob('*e91.fits.fz'):
 # Write out the meta_data elements to a file
 filecontent = Table([t_image,t_newimg, t_epoch, t_filter, t_airmass], \
 				names=['IMAGE','NEWIMG','EPOCH','FILTER','AIRMASS'])
-filepath = "..//datared/J0600_meta-data.txt"
+filepath = "datared/J0600_meta-data.txt"
 ascii.write(filecontent, filepath, overwrite=True)
 
 
